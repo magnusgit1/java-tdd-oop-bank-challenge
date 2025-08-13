@@ -45,14 +45,11 @@ public class Customer {
         return savingsAccount != null;
     }
 
-    /*
     public boolean deposit(Account account, int amount){
-
+        return account.deposit(amount);
     }
 
     public boolean withdraw(Account account, int amount){
-
+        return account.withdraw(amount);
     }
-
-     */
 }
