@@ -84,9 +84,9 @@ public abstract class Account {
                 total += trans;
                 String curr;
                 if (trans > 0) {
-                    curr = "|"  + date + "   |" + trans + "       |          |" + total + "   |\n";
+                    curr = "|"  + date + "   |" + trans + "       |          |" + total + "     |\n";
                 } else {
-                    curr = "|"  + date + "   |" +  "          |" + trans + "      |" + total + "   |\n";
+                    curr = "|"  + date + "   |" +  "          |" + trans + "      |" + total + "     |\n";
                 }
                 res.append(curr);
             }
