@@ -7,7 +7,6 @@ import java.util.Map;
 
 public abstract class Account {
     private final String branch;
-    private double balance;
     private final HashMap<String, List<Integer>> transactions;
     private final int id;
 
@@ -15,7 +14,6 @@ public abstract class Account {
         this.branch = branch;
         this.id = id;
         this.transactions = new HashMap<>();
-        this.balance = 0.0;
     }
 
     public int getId(){
@@ -23,7 +21,14 @@ public abstract class Account {
     }
 
     public double getBalance(){
-        return this.balance;
+        double balance = 0.0;
+        for (Map.Entry<String, List<Integer>> entry : transactions.entrySet()) {
+            List<Integer> value = entry.getValue();
+            for (int trans : value) {
+                balance += trans;
+            }
+        }
+        return balance;
     }
 
     public String getBranch(){
@@ -36,7 +41,6 @@ public abstract class Account {
 
     public boolean deposit(int amount){
         if (amount < 0) { return false; }
-        this.balance += amount;
 
         // create transaction
         String date = currentDate();
@@ -49,8 +53,7 @@ public abstract class Account {
     }
 
     public boolean withdraw(int amount){
-        if (amount > this.balance) { return false; }
-        this.balance -= amount;
+        if (amount > getBalance()) { return false; }
 
         // create transaction
         String date = currentDate();

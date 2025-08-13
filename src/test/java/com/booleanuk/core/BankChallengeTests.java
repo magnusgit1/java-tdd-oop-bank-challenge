@@ -80,4 +80,19 @@ public class BankChallengeTests {
 
         Assertions.assertTrue(jim.generateStatement(jim.getCurrentAccount()).contains(jim.getCurrentAccount().currentDate()));
     }
+
+    @Test
+    public void testExtensionOne(){
+
+        Bank bank = new Bank("Storebrand");
+
+        Customer jim = new Customer(bank, "Jim", "Oslo");
+
+        jim.createCurrentAccount();
+
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.withdraw(jim.getCurrentAccount(), 150);
+
+        Assertions.assertEquals(350.0, jim.getCurrentAccount().getBalance());
+    }
 }
