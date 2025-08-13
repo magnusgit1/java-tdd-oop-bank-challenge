@@ -52,4 +52,8 @@ public class Customer {
     public boolean withdraw(Account account, int amount){
         return account.withdraw(amount);
     }
+
+    public String generateStatement(Account account){
+        return account.generateStatement();
+    }
 }

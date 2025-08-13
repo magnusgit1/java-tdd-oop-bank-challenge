@@ -1,8 +1,6 @@
 package com.booleanuk.core;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 
 public class BankChallengeTests {
@@ -23,10 +21,16 @@ public class BankChallengeTests {
         Assertions.assertFalse(jim.createCurrentAccount());
         Assertions.assertTrue(bob.createSavingsAccount());
         Assertions.assertEquals(1, jim.getCurrentAccount().getId());
+        Assertions.assertEquals("NewYork", jim.getCurrentAccount().getBranch());
+        Assertions.assertEquals("Nordea", bank.getName());
+        Assertions.assertEquals(3, bank.getAllAccounts().size());
+        Assertions.assertEquals("Jim", jim.getName());
+        Assertions.assertInstanceOf(CurrentAccount.class, jim.getCurrentAccount());
+        Assertions.assertInstanceOf(SavingsAccount.class, bob.getSavingsAccount());
     }
 
     @Test
-    public void testDeposit(){
+    public void testDepositAndWithdraw(){
         Bank bank = new Bank("DNB");
 
         Customer jim = new Customer(bank, "Jim", "Ohio");
@@ -54,12 +58,26 @@ public class BankChallengeTests {
     }
 
     @Test
-    public void testWithdraw(){
-
-    }
-
-    @Test
     public void testGenerateStatement(){
+        Bank bank = new Bank("Storebrand");
 
+        Customer jim = new Customer(bank, "Jim", "Oslo");
+        Customer bob = new Customer(bank, "Bob", "Oslo");
+
+        jim.createCurrentAccount();
+        bob.createSavingsAccount();
+
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.withdraw(jim.getCurrentAccount(), 150);
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.withdraw(jim.getCurrentAccount(), 200);
+        jim.withdraw(jim.getCurrentAccount(), 100);
+        jim.withdraw(jim.getCurrentAccount(), 105);
+
+        System.out.println(jim.generateStatement(jim.getCurrentAccount()));
+
+        Assertions.assertTrue(jim.generateStatement(jim.getCurrentAccount()).contains(jim.getCurrentAccount().currentDate()));
     }
 }
