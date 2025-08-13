@@ -6,11 +6,13 @@ public class Bank {
     private final String name;
     private final List<Account> allAccounts;
     private int idIncrementer;
+    Manager manager;
 
-    public Bank(String name){
+    public Bank(String name, Manager manager){
         this.name = name;
         this.allAccounts = new ArrayList<>();
         this.idIncrementer = 1;
+        this.manager = manager;
     }
 
     public String getName(){
@@ -22,14 +24,14 @@ public class Bank {
     }
 
     public Account createCurrentAccount(Customer customer){
-        Account newAccount = new CurrentAccount(customer.getBranch(), idIncrementer);
+        Account newAccount = new CurrentAccount(customer.getBranch(), idIncrementer, manager);
         allAccounts.add(newAccount);
         this.idIncrementer++;
         return newAccount;
     }
 
     public Account createSavingsAccount(Customer customer){
-        Account newAccount = new SavingsAccount(customer.getBranch(), idIncrementer);
+        Account newAccount = new SavingsAccount(customer.getBranch(), idIncrementer, manager);
         allAccounts.add(newAccount);
         this.idIncrementer++;
         return newAccount;

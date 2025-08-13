@@ -2,7 +2,7 @@ package com.booleanuk.core;
 
 public class CurrentAccount extends Account {
 
-    public CurrentAccount(String branch, int id){
-        super(branch, id);
+    public CurrentAccount(String branch, int id, Manager manager){
+        super(branch, id, manager);
     }
 }

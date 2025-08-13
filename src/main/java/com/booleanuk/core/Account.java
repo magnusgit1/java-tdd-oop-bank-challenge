@@ -7,11 +7,13 @@ import java.util.Map;
 
 public abstract class Account {
     private final String branch;
+    private final Manager manager;
     private final HashMap<String, List<Integer>> transactions;
     private final int id;
 
-    public Account(String branch, int id){
+    public Account(String branch, int id, Manager manager){
         this.branch = branch;
+        this.manager = manager;
         this.id = id;
         this.transactions = new HashMap<>();
     }
@@ -41,7 +43,6 @@ public abstract class Account {
 
     public boolean deposit(int amount){
         if (amount < 0) { return false; }
-
         // create transaction
         String date = currentDate();
         if (!transactions.containsKey(date)){
@@ -53,8 +54,9 @@ public abstract class Account {
     }
 
     public boolean withdraw(int amount){
-        if (amount > getBalance()) { return false; }
-
+        if (!manager.approveDraft(amount, getBalance()) || getBalance()-amount < 0 && this instanceof SavingsAccount) {
+            return false;
+        }
         // create transaction
         String date = currentDate();
         if (!transactions.containsKey(date)){
@@ -67,11 +69,9 @@ public abstract class Account {
 
     public String currentDate(){
         LocalDateTime time = LocalDateTime.now();
-
         String day = String.valueOf(time.getDayOfMonth());
         String month = String.valueOf(time.getMonthValue());
         String year = String.valueOf(time.getYear());
-
         return day + "/" + month + "/" + year;
     }
 

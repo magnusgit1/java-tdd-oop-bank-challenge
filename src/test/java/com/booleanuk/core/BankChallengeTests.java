@@ -7,8 +7,9 @@ public class BankChallengeTests {
 
     @Test
     public void testAccountCreation(){
-        Bank bank = new Bank("Nordea");
 
+        Manager manager = new Manager("Bard", -1000);
+        Bank bank = new Bank("Nordea", manager);
         Customer jim = new Customer(bank, "Jim", "NewYork");
         Customer bob = new Customer(bank, "Bob", "Oslo");
 
@@ -31,8 +32,9 @@ public class BankChallengeTests {
 
     @Test
     public void testDepositAndWithdraw(){
-        Bank bank = new Bank("DNB");
 
+        Manager manager = new Manager("Bard", -10000);
+        Bank bank = new Bank("DNB", manager);
         Customer jim = new Customer(bank, "Jim", "Ohio");
         Customer bob = new Customer(bank, "Bob", "Nevada");
 
@@ -49,18 +51,17 @@ public class BankChallengeTests {
         jim.deposit(jim.getCurrentAccount(), 200);
 
         Assertions.assertEquals(2, jim.getCurrentAccount().getTransactions().get(date).size());
-
         Assertions.assertEquals(700, jim.getCurrentAccount().getBalance());
         Assertions.assertEquals(0, bob.getSavingsAccount().getBalance());
-        Assertions.assertFalse(jim.withdraw(jim.getCurrentAccount(), 900));
         Assertions.assertTrue(jim.withdraw(jim.getCurrentAccount(), 600));
         Assertions.assertTrue(jim.deposit(jim.getCurrentAccount(), 100));
     }
 
     @Test
     public void testGenerateStatement(){
-        Bank bank = new Bank("Storebrand");
 
+        Manager manager = new Manager("Bard", -1000);
+        Bank bank = new Bank("Storebrand", manager);
         Customer jim = new Customer(bank, "Jim", "Oslo");
         Customer bob = new Customer(bank, "Bob", "Oslo");
 
@@ -77,22 +78,60 @@ public class BankChallengeTests {
         jim.withdraw(jim.getCurrentAccount(), 105);
 
         System.out.println(jim.generateStatement(jim.getCurrentAccount()));
-
         Assertions.assertTrue(jim.generateStatement(jim.getCurrentAccount()).contains(jim.getCurrentAccount().currentDate()));
     }
 
     @Test
     public void testExtensionOne(){
 
-        Bank bank = new Bank("Storebrand");
-
+        Manager manager = new Manager("Bard", -1000);
+        Bank bank = new Bank("Storebrand", manager);
         Customer jim = new Customer(bank, "Jim", "Oslo");
 
         jim.createCurrentAccount();
-
         jim.deposit(jim.getCurrentAccount(), 500);
         jim.withdraw(jim.getCurrentAccount(), 150);
 
         Assertions.assertEquals(350.0, jim.getCurrentAccount().getBalance());
+    }
+
+    @Test
+    public void testExtensionTwo(){
+
+        Manager manager = new Manager("Bard", -1000);
+        Bank bank = new Bank("Storebrand", manager);
+        Customer jim = new Customer(bank, "Jim", "Oslo");
+
+        jim.createCurrentAccount();
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.withdraw(jim.getCurrentAccount(), 150);
+
+        Assertions.assertEquals(jim.getCurrentAccount().getBranch(), jim.getBranch());
+        Assertions.assertEquals("Oslo", jim.getCurrentAccount().getBranch());
+    }
+
+    @Test
+    public void testExtensionThreeAndFour(){
+
+        Manager manager = new Manager("Bard", -1000);
+        Bank bank = new Bank("Storebrand", manager);
+        Customer jim = new Customer(bank, "Jim", "Oslo");
+
+        jim.createCurrentAccount();
+        jim.createSavingsAccount();
+
+        jim.deposit(jim.getCurrentAccount(), 500);
+        jim.deposit(jim.getSavingsAccount(), 500);
+        jim.withdraw(jim.getCurrentAccount(), 150);
+        jim.withdraw(jim.getSavingsAccount(), 150);
+        // this next request should be approved since the limit for overdrafting is set to 1000
+        boolean approved = jim.withdraw(jim.getCurrentAccount(), 500);
+        // this next request should not be approved, since it runs over the limit of 1000
+        boolean notApprovedSavings = jim.withdraw(jim.getSavingsAccount(), 400);
+        boolean notApproved = jim.withdraw(jim.getCurrentAccount(), 1000);
+
+        Assertions.assertTrue(approved);
+        Assertions.assertFalse(notApprovedSavings);
+        Assertions.assertFalse(notApproved);
     }
 }
